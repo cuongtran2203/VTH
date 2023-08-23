@@ -27,6 +27,7 @@ df_new=df.query("sleep != 0 & sleep <10100")
 Mx=df_new["Mx"]
 My=df_new["My"]
 Mz=df_new["Mz"]
+track_org=df["timestamps"][0]
 time_track=df["timestamps"][0]
 def custom_interval(frame_number, base_interval=df_new["sleep"].min(), max_interval=df_new["sleep"].max()):
     # Custom interval function: increase delay gradually as frame number increases
@@ -45,17 +46,21 @@ def animate(i):
     # print(time_tracking)
     time.sleep(abs(time_tracking/1000))
     time_track=df["timestamps"][i]
-    Mx_vi=df_new[df_new["sleep"]==df_new["sleep"][i+2]]["Mx"]
-    My_vi=df_new[df_new["sleep"]==df_new["sleep"][i+2]]["My"]
-    Mz_vi=df_new[df_new["sleep"]==df_new["sleep"][i+2]]["Mz"]
-    ax.scatter(Mx_vi,My_vi,Mz_vi) 
+    Mx_vi=df[df["timestamps"]==df["timestamps"][i]]["Mx"]
+    My_vi=df[df["timestamps"]==df["timestamps"][i]]["My"]
+    Mz_vi=df[df["timestamps"]==df["timestamps"][i]]["Mz"]
+    ax.scatter(Mx_vi,My_vi,Mz_vi)
+    ax.set_xlim(df["Mx"].min(),df["Mx"].max())
+    ax.set_ylim(df["My"].min(),df["My"].max())
+    ax.set_zlim(df["Mz"].min(),df["Mz"].max())
+    
     # print(Mx,My,Mz)
 
    
 ani = animation.FuncAnimation(
-    fig, animate,init_func=init,frames=135, interval=5
+    fig, animate,init_func=init,frames=df["Mx"].unique().size, interval=5
 )
-ani.save("results.gif")
+# ani.save("results.gif")
 plt.show() 
 
 
